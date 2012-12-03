@@ -6,10 +6,6 @@ cmake_minimum_required (VERSION 2.6)
 
 project (matching)
 
-# COMPILER SELECTION #############################
-
-set (CMAKE_CXX_COMPILER "clang++")
-
 # COMPILER OPTIONS ###############################
 
 set (CMAKE_CXX_FLAGS "-std=c++11 -Wall")

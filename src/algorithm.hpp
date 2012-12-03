@@ -20,13 +20,10 @@
  * initializes the object to zero.
  */
 
-#include "algorithm_free_impl.cpp"
-
 template <typename Node, typename Result>
 class algorithm
 {
 private:
-  friend class nodes_arranger<algorithm>;
   typedef Node node_t;
   typedef Result result_t;
   typedef std::vector<node_t> nodes_t;
@@ -48,7 +45,7 @@ private:
   nodes_t const nodes;
 };
 
-#include "algorithm_member_impl.cpp"
+#include "algorithm_impl.cpp"
 
 #endif
 

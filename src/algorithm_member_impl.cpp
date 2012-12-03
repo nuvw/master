@@ -1,4 +1,4 @@
-#include <map>
+#include <unordered_map>
 
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/numeric.hpp>
@@ -19,7 +19,7 @@ template <typename Node, typename Result>
 typename algorithm<Node, Result>::result_t
 algorithm<Node, Result>::run() const
 {
-  typedef std::map<state_t, result_t> state_count_map_t;
+  typedef std::unordered_map<state_t, result_t> state_count_map_t;
 
   state_count_map_t state_count_map;
   state_count_map[root( nodes.begin(), nodes.end() )] = 1;

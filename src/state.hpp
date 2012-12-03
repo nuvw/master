@@ -1,6 +1,7 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 
+#include <functional>
 #include <iterator>
 #include <ostream>
 #include <vector>
@@ -84,6 +85,9 @@ public:
       nodes_iterator const & iterator_2 );
 
   public:
+    friend bool operator== <Iterator, Traits>(
+      state const & state_1,
+      state const & state_2 );
     friend bool operator< <Iterator, Traits>(
       state const & state_1,
       state const & state_2 );
@@ -142,13 +146,17 @@ private:
 
   // STREAM INSERTION //////////////////////////////////////
 
+public:
   friend std::ostream & operator<< <Iterator, Traits>(
     std::ostream & ostream,
     state const & state );
 
-  // DEFAULT TOTAL ORDER FOR USE IN STL CONTAINERS /////////
+  // COMPARING /////////////////////////////////////////////
 
 public:
+  friend bool operator== <Iterator, Traits>(
+    state const & state_1,
+    state const & state_2 );
   friend bool operator< <Iterator, Traits>(
     state const & state_1,
     state const & state_2 );
@@ -157,6 +165,11 @@ private:
   static bool comparable(
     state const & state_1,
     state const & state_2 );
+
+  // HASHING ///////////////////////////////////////////////
+
+public:
+  friend class std::hash<state>;
 
   // ATTRIBUTES (ALL CONST UNLESS MOVED FROM THIS) /////////
 

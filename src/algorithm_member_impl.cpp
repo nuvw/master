@@ -26,6 +26,8 @@ algorithm<Node, Result>::run() const
 
   for( std::size_t i = 0; 2*i < nodes.size(); i++ )
   {
+    utility::console::write_line( "Iteration %1%", i );
+
     state_count_map_t new_state_count_map;
 
     for( auto& old_state_and_count : state_count_map )
@@ -51,10 +53,6 @@ typename algorithm<Node, Result>::successors_t
 algorithm<Node, Result>::successors(
   state_t const & parent ) const
 {
-  using utility::console::write_line;
-
-  write_line( "Fixed parent state: %1%", parent );
-
   successors_t result;
 
   auto const free_begin = parent.free_nodes_begin();
@@ -69,13 +67,9 @@ algorithm<Node, Result>::successors(
     node_t::ascending( *lower_node, *marked ));
     previous_lower_node = lower_node++ )
   {
-    write_line( "  Fixed lower node: %1%", *lower_node );
-
     if( previous_lower_node != free_end &&
       lower_node->y == previous_lower_node->y )
     {
-      write_line( "    Discard: Free nodes directly to the left" );
-
       continue;
     }
 
@@ -86,8 +80,6 @@ algorithm<Node, Result>::successors(
     for( auto upper_node = lower_node;
       ++upper_node != free_end; )
     {
-      write_line( "    Fixed upper node: %1%", *upper_node );
-
       if( extreme_free == lower_node ||
         node_t::strict_left_turn(
           *lower_node,
@@ -120,8 +112,6 @@ algorithm<Node, Result>::successors(
             *extreme_matched,
             *upper_node ) )
         {
-          write_line( "      Success: New edge found" );
-
           result.push_back( parent.successor(
             lower_node,
             upper_node ) );
@@ -133,13 +123,7 @@ algorithm<Node, Result>::successors(
           // for upper_node will either have the same matched
           // nodes to the right, or the current upper_node to its
           // left.
-
-          write_line( "      Discard: Matched nodes in right shadow" );
         }
-      }
-      else
-      {
-        write_line( "      Discard: Free nodes in left shadow" );
       }
     }
   }

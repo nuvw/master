@@ -6,6 +6,8 @@ add_executable (state_test
   state_test)
 add_executable (algorithm_test
   algorithm_test)
+add_executable (algorithm_heavy_test
+  algorithm_heavy_test)
 
 # TESTING ########################################
 
@@ -15,4 +17,6 @@ add_test (State
   ${CMAKE_CURRENT_BINARY_DIR}/state_test)
 add_test (Algorithm
   ${CMAKE_CURRENT_BINARY_DIR}/algorithm_test)
+add_test (AlgorithmHeavy
+  ${CMAKE_CURRENT_BINARY_DIR}/algorithm_heavy_test)
 

@@ -122,7 +122,7 @@ namespace std
   {
   public:
     std::size_t operator()(
-      const state<Iterator, Traits> & state ) const
+      state<Iterator, Traits> const & state ) const
     {
       typedef typename
         ::state<Iterator, Traits>::free_nodes_t free_nodes_t;

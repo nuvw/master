@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 #include <vector>
 
 #include "state.hpp"
@@ -7,7 +8,7 @@ void run_test( bool b )
 {
   if( !b )
   {
-    std::exit( 1 );
+    std::exit( EXIT_FAILURE );
   }
 }
 

@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <vector>
 
 #include "node.hpp"
@@ -10,7 +11,7 @@ void run_test( Test const & test, Result const & result )
 
   if( algo_t( test.begin(), test.end() ).run() != result )
   {
-    std::exit( 1 );
+    std::exit( EXIT_FAILURE );
   }
 }
 

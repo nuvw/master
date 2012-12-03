@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <sstream>
 
 #include "node.hpp"
@@ -6,7 +7,7 @@ void run_test( bool b )
 {
   if( !b )
   {
-    std::exit( 1 );
+    std::exit( EXIT_FAILURE );
   }
 }
 

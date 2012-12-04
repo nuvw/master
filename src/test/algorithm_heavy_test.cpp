@@ -27,7 +27,9 @@ int main()
   test_t test;
   for( int i = 0; i < 26; i++ )
   {
-    test.push_back( node_t( random(), random() ) );
+    auto n1 = random();
+    auto n2 = random();
+    test.push_back( node_t( n1, n2 ) );
   }
 
   auto result = algorithm_t( test.begin(), test.end() ).run();

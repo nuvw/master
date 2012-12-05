@@ -75,7 +75,7 @@ typename algorithm<Node, Result>::result_t
 algorithm<Node, Result>::run() const
 {
   struct {
-    void initiate( int ) {};
+    void initiate( int ) {}
     void iterate( int, int, int ) {}
     void finalize( int ) {}
   } profiler;

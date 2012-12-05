@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "node.hpp"
+#include <ggc/impl/node.cpp>
 
 void run_test( bool b )
 {

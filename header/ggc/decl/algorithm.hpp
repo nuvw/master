@@ -1,9 +1,10 @@
-#ifndef ALGORITHM_HPP
-#define ALGORITHM_HPP
+#ifndef GGC_DECL_ALGORITHM_HPP
+#define GGC_DECL_ALGORITHM_HPP
 
 #include <vector>
 
-#include "state.hpp"
+#include <ggc/decl/algorithm_fwd.hpp>
+#include <ggc/decl/state_fwd.hpp>
 
 /**
  * A class that runs the perfect matching counting algorithm on
@@ -46,8 +47,6 @@ private:
 private:
   nodes_t const nodes;
 };
-
-#include "impl/algorithm.cpp"
 
 #endif
 

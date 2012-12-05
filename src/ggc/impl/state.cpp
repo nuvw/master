@@ -1,6 +1,14 @@
+#ifndef GGC_IMPL_STATE_CPP
+#define GGC_IMPL_STATE_CPP
+
 #include <algorithm>
 #include <cassert>
+#include <functional>
 #include <iterator>
+#include <type_traits>
+#include <utility>
+
+#include <ggc/decl/state.hpp>
 
 template <typename Iterator, typename Traits>
 template <bool Free>
@@ -52,7 +60,7 @@ state<Iterator, Traits>::nodes_iterator<Free>::operator++()
 {
   assert( incrementable( *this ) );
 
-  while( ++external, // Praise the almighty comma operator!
+  while( ++external,
     ++internal != internal_end && *internal != Free );
 
   return *this;
@@ -68,6 +76,26 @@ state<Iterator, Traits>::nodes_iterator<Free>::operator++( int )
   operator++();
 
   return std::move( temp );
+}
+
+template <typename Iterator>
+typename std::enable_if<is_nodes_iterator<Iterator>::value,
+bool>::type operator==(
+  Iterator const & iterator_1,
+  Iterator const & iterator_2 )
+{
+  assert( Iterator::comparable( iterator_1, iterator_2 ) );
+
+  return iterator_1.internal == iterator_2.internal;
+}
+
+template <typename Iterator>
+typename std::enable_if<is_nodes_iterator<Iterator>::value,
+bool>::type operator!=(
+  Iterator const & iterator_1,
+  Iterator const & iterator_2 )
+{
+  return !(iterator_1 == iterator_2);
 }
 
 template <typename Iterator, typename Traits>
@@ -165,6 +193,14 @@ state<Iterator, Traits>::marked_node() const
 }
 
 template <typename Iterator, typename Traits>
+state<Iterator, Traits> root(
+  Iterator const & external_begin,
+  Iterator const & external_end )
+{
+  return state<Iterator, Traits>( external_begin, external_end );
+}
+
+template <typename Iterator, typename Traits>
 state<Iterator, Traits> state<Iterator, Traits>::successor(
   free_nodes_iterator const & lower_node,
   free_nodes_iterator const & upper_node ) const
@@ -210,6 +246,73 @@ state<Iterator, Traits>::state(
 }
 
 template <typename Iterator, typename Traits>
+std::ostream & operator<<(
+  std::ostream & ostream,
+  state<Iterator, Traits> const & state )
+{
+  std::copy(
+    state.free_nodes.begin(),
+    state.free_nodes.end(),
+    std::ostream_iterator<bool>( ostream ) );
+
+  return ostream;
+}
+
+template <typename Iterator, typename Traits>
+bool operator==(
+  state<Iterator, Traits> const & state_1,
+  state<Iterator, Traits> const & state_2 )
+{
+  assert(( state<Iterator, Traits>::comparable(
+    state_1,
+    state_2 ) ));
+
+  bool equal = std::equal(
+    state_1.free_nodes.begin(),
+    state_1.free_nodes.end(),
+    state_2.free_nodes.begin() );
+
+  auto marked_1_index = std::distance(
+    state_1.marked.internal,
+    state_1.marked.internal_end );
+  auto marked_2_index = std::distance(
+    state_2.marked.internal,
+    state_2.marked.internal_end );
+
+  return (equal && marked_1_index == marked_2_index);
+}
+
+template <typename Iterator, typename Traits>
+bool operator<(
+  state<Iterator, Traits> const & state_1,
+  state<Iterator, Traits> const & state_2 )
+{
+  assert(( state<Iterator, Traits>::comparable(
+    state_1,
+    state_2 ) ));
+
+  bool lexico = std::lexicographical_compare(
+    state_1.free_nodes.begin(),
+    state_1.free_nodes.end(),
+    state_2.free_nodes.begin(),
+    state_2.free_nodes.end() );
+  bool equal = std::equal(
+    state_1.free_nodes.begin(),
+    state_1.free_nodes.end(),
+    state_2.free_nodes.begin() );
+
+  auto marked_1_index = std::distance(
+    state_1.marked.internal,
+    state_1.marked.internal_end );
+  auto marked_2_index = std::distance(
+    state_2.marked.internal,
+    state_2.marked.internal_end );
+
+  return lexico || (equal &&
+    marked_1_index < marked_2_index);
+}
+
+template <typename Iterator, typename Traits>
 bool state<Iterator, Traits>::comparable(
   state const & state_1,
   state const & state_2 )
@@ -217,4 +320,23 @@ bool state<Iterator, Traits>::comparable(
   return state_1.external_begin == state_2.external_begin &&
     state_1.external_end == state_2.external_end;
 }
+
+namespace std
+{
+  template <typename Iterator, typename Traits>
+  struct hash<state<Iterator, Traits>>
+  {
+  public:
+    std::size_t operator()(
+      state<Iterator, Traits> const & state ) const
+    {
+      typedef typename
+        ::state<Iterator, Traits>::free_nodes_t free_nodes_t;
+
+      return std::hash<free_nodes_t>()( state.free_nodes );
+    }
+  };
+}
+
+#endif
 

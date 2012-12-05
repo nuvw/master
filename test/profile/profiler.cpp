@@ -1,7 +1,7 @@
-#include "utility/console.hpp"
+#include <ggc/algorithm>
+#include <ggc/node>
 
-#include "algorithm.hpp"
-#include "node.hpp"
+#include "utility/console.hpp"
 
 using utility::console::write_line;
 

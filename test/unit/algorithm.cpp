@@ -1,8 +1,8 @@
 #include <cstdlib>
 #include <vector>
 
-#include "node.hpp"
-#include "algorithm.hpp"
+#include <ggc/impl/algorithm.cpp>
+#include <ggc/impl/node.cpp>
 
 template <typename Test, typename Result>
 void run_test( Test const & test, Result const & result )

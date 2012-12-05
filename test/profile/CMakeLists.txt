@@ -1,4 +1,4 @@
-# INCLUDE DIRECTORY ##############################
+# INCLUDE DIRECTORIES ############################
 
 include_directories (.)
 

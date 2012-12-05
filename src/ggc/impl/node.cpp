@@ -1,4 +1,10 @@
+#ifndef GGC_IMPL_NODE_CPP
+#define GGC_IMPL_NODE_CPP
+
+#include <ostream>
 #include <utility>
+
+#include <ggc/decl/node.hpp>
 
 template <typename Numeric>
 node<Numeric>::node( numeric_t const & x, numeric_t const & y )
@@ -12,6 +18,14 @@ node<Numeric>::node( numeric_t && x, numeric_t && y )
 : x( std::move( x ) ), y( std::move( y ) )
 {
 
+}
+
+template <typename Numeric>
+std::ostream & operator<<(
+  std::ostream & ostream,
+  node<Numeric> const & node )
+{
+  return ostream << '(' << node.x << ',' << node.y << ')';
 }
 
 template <typename Numeric>
@@ -101,4 +115,6 @@ node<Numeric>::cross_product(
   if( pl < pr ) return minus;
   return zero;
 }
+
+#endif
 

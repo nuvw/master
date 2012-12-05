@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <vector>
 
-#include "state.hpp"
+#include <ggc/impl/state.cpp>
 
 void run_test( bool b )
 {

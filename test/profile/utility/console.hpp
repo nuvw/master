@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+
 #include <boost/format.hpp>
 
 namespace utility
@@ -10,7 +11,7 @@ namespace utility
   namespace console
   {
     template <typename Format>
-    void insert( Format& format )
+    void insert( Format & )
     {
 
     }
@@ -23,7 +24,7 @@ namespace utility
     }
      
     template <typename ... Args>
-    void write_line( const std::string& str, Args && ... args )
+    void write_line( std::string const & str, Args && ... args )
     {
       auto format = boost::format( str );
       insert( format, std::forward<Args>( args ) ... );

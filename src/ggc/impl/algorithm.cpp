@@ -1,8 +1,15 @@
+#ifndef GGC_IMPL_ALGORITHM_CPP
+#define GGC_IMPL_ALGORITHM_CPP
+
 #include <algorithm>
 #include <unordered_map>
+#include <utility>
 
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/numeric.hpp>
+
+#include <ggc/decl/algorithm.hpp>
+#include <ggc/impl/state.cpp>
 
 template <typename Nodes>
 class nodes_arranger
@@ -212,4 +219,6 @@ algorithm<Node, Result>::successors(
 
   return std::move( result );
 }
+
+#endif
 

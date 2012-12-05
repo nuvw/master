@@ -1,7 +1,9 @@
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef GGC_DECL_NODE_HPP
+#define GGC_DECL_NODE_HPP
 
 #include <ostream>
+
+#include <ggc/decl/node_fwd.hpp>
 
 /**
  * A class that represents a node in the plane with x and y
@@ -18,8 +20,6 @@
  * @ Numeric operator-( Numeric, Numeric ),  subtraction;
  * @ Numeric operator*( Numeric, Numeric ),  multiplication.
  */
-
-#include "impl/node_free.cpp"
 
 template <typename Numeric>
 class node
@@ -81,8 +81,6 @@ public:
   numeric_t x;
   numeric_t y;
 };
-
-#include "impl/node.cpp"
 
 #endif
 

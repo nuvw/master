@@ -1,10 +1,12 @@
-#ifndef STATE_HPP
-#define STATE_HPP
+#ifndef GGC_DECL_STATE_HPP
+#define GGC_DECL_STATE_HPP
 
 #include <functional>
 #include <iterator>
 #include <ostream>
 #include <vector>
+
+#include <ggc/decl/state_fwd.hpp>
 
 /**
  * A class that represents one of the intermediate states during
@@ -24,11 +26,7 @@
  * or any descendant from it exists.
  */
 
-#include "impl/state_free.cpp"
-
-template <
-  typename Iterator,
-  typename Traits = std::iterator_traits<Iterator>>
+template <typename Iterator, typename Traits>
 class state
 {
   // TYPES /////////////////////////////////////////////////
@@ -169,7 +167,7 @@ private:
   // HASHING ///////////////////////////////////////////////
 
 public:
-  friend class std::hash<state>;
+  friend struct std::hash<state>;
 
   // ATTRIBUTES (ALL CONST UNLESS MOVED FROM THIS) /////////
 
@@ -179,8 +177,6 @@ private:
   free_nodes_t free_nodes;
   matched_nodes_iterator marked;
 };
-
-#include "impl/state.cpp"
 
 #endif
 

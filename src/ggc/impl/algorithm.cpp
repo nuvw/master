@@ -77,6 +77,7 @@ algorithm<Node, Result>::algorithm(
 {
 
 }
+
 template <typename Node, typename Result>
 typename algorithm<Node, Result>::result_t
 algorithm<Node, Result>::run() const

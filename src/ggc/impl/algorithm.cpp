@@ -121,7 +121,7 @@ algorithm<Node, Result>::run(
       {
         ++num_edges;
 
-        new_state_count_map[std::move( new_state )] += count;
+        new_state_count_map[new_state] += count;
       }
     }
 

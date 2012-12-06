@@ -13,9 +13,7 @@
 template <typename Iterator, typename Traits>
 template <bool Free>
 state<Iterator, Traits>::nodes_iterator<Free>::nodes_iterator()
-: internal(),
-  internal_end(),
-  external()
+: state_ptr( nullptr )
 {
 
 }
@@ -23,11 +21,11 @@ state<Iterator, Traits>::nodes_iterator<Free>::nodes_iterator()
 template <typename Iterator, typename Traits>
 template <bool Free>
 state<Iterator, Traits>::nodes_iterator<Free>::nodes_iterator(
-  internal_iterator_t const & internal,
-  internal_iterator_t const & internal_end,
+  state const * state_ptr,
+  index_t index,
   external_iterator_t const & external )
-: internal( internal ),
-  internal_end( internal_end ),
+: state_ptr( state_ptr ),
+  index( index ),
   external( external )
 {
 
@@ -39,6 +37,7 @@ typename state<Iterator, Traits>::template
 nodes_iterator<Free>::reference
 state<Iterator, Traits>::nodes_iterator<Free>::operator*() const
 {
+  assert( !null( *this ) );
   assert( dereferenceable( *this ) );
 
   return *external;
@@ -58,10 +57,11 @@ template <bool Free>
 state<Iterator, Traits>::nodes_iterator<Free> &
 state<Iterator, Traits>::nodes_iterator<Free>::operator++()
 {
+  assert( !null( *this ) );
   assert( incrementable( *this ) );
 
-  while( ++external,
-    ++internal != internal_end && *internal != Free );
+  while( ++external, ++index != state_ptr->free_nodes.size() &&
+    state_ptr->free_nodes[index] != Free );
 
   return *this;
 }
@@ -84,9 +84,11 @@ bool>::type operator==(
   Iterator const & iterator_1,
   Iterator const & iterator_2 )
 {
+  assert( !Iterator::null( iterator_1 ) );
+  assert( !Iterator::null( iterator_2 ) );
   assert( Iterator::comparable( iterator_1, iterator_2 ) );
 
-  return iterator_1.internal == iterator_2.internal;
+  return iterator_1.index == iterator_2.index;
 }
 
 template <typename Iterator>
@@ -101,10 +103,19 @@ bool>::type operator!=(
 template <typename Iterator, typename Traits>
 template <bool Free>
 bool
+state<Iterator, Traits>::nodes_iterator<Free>::null(
+  nodes_iterator const & iterator )
+{
+  return iterator.state_ptr == nullptr;
+}
+
+template <typename Iterator, typename Traits>
+template <bool Free>
+bool
 state<Iterator, Traits>::nodes_iterator<Free>::dereferenceable(
   nodes_iterator const & iterator )
 {
-  return iterator.internal != iterator.internal_end;
+  return iterator.index != iterator.state_ptr->free_nodes.size();
 }
 
 template <typename Iterator, typename Traits>
@@ -113,7 +124,7 @@ bool
 state<Iterator, Traits>::nodes_iterator<Free>::incrementable(
   nodes_iterator const & iterator )
 {
-  return iterator.internal != iterator.internal_end;
+  return iterator.index != iterator.state_ptr->free_nodes.size();
 }
 
 template <typename Iterator, typename Traits>
@@ -123,7 +134,7 @@ state<Iterator, Traits>::nodes_iterator<Free>::comparable(
   nodes_iterator const & iterator_1,
   nodes_iterator const & iterator_2 )
 {
-  return iterator_1.internal_end == iterator_2.internal_end;
+  return iterator_1.state_ptr == iterator_2.state_ptr;
 }
 
 template <typename Iterator, typename Traits>
@@ -131,14 +142,11 @@ template <bool Free>
 state<Iterator, Traits>::nodes_iterator<Free>
 state<Iterator, Traits>::nodes_begin() const
 {
-  if( external_begin != external_end )
+  if( !free_nodes.empty() )
   {
-    nodes_iterator<Free> it(
-      free_nodes.begin(),
-      free_nodes.end(),
-      external_begin );
+    nodes_iterator<Free> it( this, 0, external_begin );
 
-    if( *it.internal != Free ) ++it;
+    if( free_nodes[0] != Free ) ++it;
 
     return std::move( it );
   }
@@ -152,8 +160,8 @@ state<Iterator, Traits>::nodes_iterator<Free>
 state<Iterator, Traits>::nodes_end() const
 {
   return nodes_iterator<Free>(
-    free_nodes.end(),
-    free_nodes.end(),
+    this,
+    free_nodes.size(),
     external_end );
 }
 
@@ -209,6 +217,62 @@ state<Iterator, Traits> state<Iterator, Traits>::successor(
 }
 
 template <typename Iterator, typename Traits>
+state<Iterator, Traits>::state( state const & state )
+: external_begin( state.external_begin ),
+  external_end( state.external_end ),
+  free_nodes( state.free_nodes ),
+  marked(
+    this,
+    state.marked.index,
+    state.marked.external )
+{
+
+}
+
+template <typename Iterator, typename Traits>
+state<Iterator, Traits>::state( state && state )
+: external_begin( std::move( state.external_begin ) ),
+  external_end( std::move( state.external_end ) ),
+  free_nodes( std::move( state.free_nodes ) ),
+  marked(
+    this,
+    state.marked.index,
+    std::move( state.marked.external ) )
+{
+
+}
+
+template <typename Iterator, typename Traits>
+state<Iterator, Traits> & state<Iterator, Traits>::operator=(
+  state const & state )
+{
+  external_begin = state.external_begin;
+  external_end = state.external_end;
+  free_nodes = state.free_nodes;
+  marked = matched_nodes_iterator(
+    this,
+    state.marked.index,
+    state.marked.external );
+
+  return *this;
+}
+
+template <typename Iterator, typename Traits>
+state<Iterator, Traits> & state<Iterator, Traits>::operator=(
+  state && state )
+{
+  external_begin = std::move( state.external_begin );
+  external_end = std::move( state.external_end );
+  free_nodes = std::move( state.free_nodes );
+  marked = matched_nodes_iterator(
+    this,
+    state.marked.index,
+    std::move( state.marked.external ) );
+
+  return *this;
+}
+
+template <typename Iterator, typename Traits>
 state<Iterator, Traits>::state(
   external_iterator_t const & external_begin,
   external_iterator_t const & external_end )
@@ -230,19 +294,10 @@ state<Iterator, Traits>::state(
 : external_begin( parent.external_begin ),
   external_end( parent.external_end ),
   free_nodes( parent.free_nodes ),
-  marked(
-    free_nodes.begin() + std::distance(
-      parent.free_nodes.begin(),
-      upper_node.internal ),
-    free_nodes.end(),
-    upper_node.external )
+  marked( this, upper_node.index, upper_node.external )
 {
-  free_nodes[std::distance(
-    parent.free_nodes.begin(),
-    lower_node.internal )] = false;
-  free_nodes[std::distance(
-    parent.free_nodes.begin(),
-    upper_node.internal )] = false;
+  free_nodes[lower_node.index] = false;
+  free_nodes[upper_node.index] = false;
 }
 
 template <typename Iterator, typename Traits>
@@ -272,14 +327,7 @@ bool operator==(
     state_1.free_nodes.end(),
     state_2.free_nodes.begin() );
 
-  auto marked_1_index = std::distance(
-    state_1.marked.internal,
-    state_1.marked.internal_end );
-  auto marked_2_index = std::distance(
-    state_2.marked.internal,
-    state_2.marked.internal_end );
-
-  return (equal && marked_1_index == marked_2_index);
+  return equal && state_1.marked.index == state_2.marked.index;
 }
 
 template <typename Iterator, typename Traits>
@@ -301,15 +349,8 @@ bool operator<(
     state_1.free_nodes.end(),
     state_2.free_nodes.begin() );
 
-  auto marked_1_index = std::distance(
-    state_1.marked.internal,
-    state_1.marked.internal_end );
-  auto marked_2_index = std::distance(
-    state_2.marked.internal,
-    state_2.marked.internal_end );
-
   return lexico || (equal &&
-    marked_1_index < marked_2_index);
+    state_1.marked.index < state_2.marked.index);
 }
 
 template <typename Iterator, typename Traits>

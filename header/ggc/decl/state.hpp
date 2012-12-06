@@ -43,12 +43,12 @@ public:
   class nodes_iterator
   {
   private:
-    typedef free_nodes_t::const_iterator internal_iterator_t;
+    typedef free_nodes_t::size_type index_t;
     typedef state<Iterator, Traits> state_t;
 
   public:
-    typedef typename
-      internal_iterator_t::difference_type difference_type;
+    typedef
+      index_t difference_type;
     typedef typename
       external_iterator_traits::value_type value_type;
     typedef typename
@@ -66,8 +66,8 @@ public:
   private:
     friend class state<Iterator, Traits>;
     nodes_iterator(
-      internal_iterator_t const & internal,
-      internal_iterator_t const & internal_end,
+      state const * state_ptr,
+      index_t index,
       external_iterator_t const & external );
 
   public:
@@ -91,6 +91,8 @@ public:
       state const & state_2 );
 
   private:
+    static bool null(
+      nodes_iterator const & iterator );
     static bool dereferenceable(
       nodes_iterator const & iterator );
     static bool incrementable(
@@ -100,8 +102,8 @@ public:
       nodes_iterator const & iterator_2 );
 
   private:
-    internal_iterator_t internal;
-    internal_iterator_t internal_end;
+    state const * state_ptr;
+    index_t index;
     external_iterator_t external;
   };
 
@@ -131,6 +133,12 @@ public:
   state successor(
     free_nodes_iterator const & lower_node,
     free_nodes_iterator const & upper_node ) const;
+
+public:
+  state( state const & state );
+  state( state && state );
+  state & operator=( state const & state );
+  state & operator=( state && state );
 
 private:
   state() = delete;

@@ -1,3 +1,7 @@
+#include <functional>
+#include <random>
+#include <vector>
+
 #include <ggc/algorithm>
 #include <ggc/node>
 

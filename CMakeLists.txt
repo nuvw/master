@@ -23,5 +23,6 @@ include_directories (src)
 
 # SUBDIRECTORIES #################################
 
+add_subdirectory (experiments)
 add_subdirectory (test)
 

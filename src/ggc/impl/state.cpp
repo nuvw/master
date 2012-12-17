@@ -13,7 +13,9 @@
 template <typename Iterator, typename Traits>
 template <bool Free>
 state<Iterator, Traits>::nodes_iterator<Free>::nodes_iterator()
-: state_ptr( nullptr )
+: state_ptr( nullptr ),
+  index( 0 ),
+  external()
 {
 
 }

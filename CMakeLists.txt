@@ -9,6 +9,7 @@ project (GGC)
 # COMPILER OPTIONS ###############################
 
 set (CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra")
+set (CMAKE_CXX_FLAGS_DEBUG "-g")
 
 # TESTING ########################################
 

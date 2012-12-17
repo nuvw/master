@@ -2,6 +2,7 @@
 #define GGC_IMPL_ALGORITHM_CPP
 
 #include <algorithm>
+#include <map>
 #include <unordered_map>
 #include <utility>
 
@@ -97,6 +98,7 @@ typename algorithm<Node, Result>::result_t
 algorithm<Node, Result>::run(
   Profiler & profiler ) const
 {
+  // typedef std::map<state_t, result_t> state_count_map_t;
   typedef std::unordered_map<state_t, result_t> state_count_map_t;
 
   profiler.initiate( nodes.size() );
@@ -111,14 +113,14 @@ algorithm<Node, Result>::run(
 
     state_count_map_t new_state_count_map;
 
-    for( auto& old_state_and_count : state_count_map )
+    for( auto const & old_state_and_count : state_count_map )
     {
       ++num_states;
 
-      auto new_states = successors( old_state_and_count.first );
-      auto& count = old_state_and_count.second;
+      auto const new_states = successors( old_state_and_count.first );
+      auto const & count = old_state_and_count.second;
 
-      for( auto& new_state : new_states )
+      for( auto const & new_state : new_states )
       {
         ++num_edges;
 

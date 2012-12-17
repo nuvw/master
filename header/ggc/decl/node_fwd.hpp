@@ -11,5 +11,10 @@ std::ostream & operator<<(
   std::ostream & ostream,
   node<Numeric> const & node );
 
+template <typename Numeric>
+bool operator<(
+  node<Numeric> const & node_1,
+  node<Numeric> const & node_2 );
+
 #endif
 

@@ -37,6 +37,11 @@ public:
     node const & node );
 
 public:
+  friend bool operator< <Numeric>(
+    node const & node_1,
+    node const & node_2 );
+
+public:
   static bool descending(
     node const & node_1,
     node const & node_2 );

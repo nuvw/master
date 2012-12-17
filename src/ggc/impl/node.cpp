@@ -29,6 +29,15 @@ std::ostream & operator<<(
 }
 
 template <typename Numeric>
+bool operator<(
+  node<Numeric> const & node_1,
+  node<Numeric> const & node_2 )
+{
+  return node_1.x < node_2.x ||
+    (node_1.x == node_2.x && node_1.y < node_2.y);
+}
+
+template <typename Numeric>
 bool node<Numeric>::descending(
   node const & node_1,
   node const & node_2 )

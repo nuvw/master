@@ -158,5 +158,57 @@ int main()
     node_t(2,4), node_t(3,5), node_t(4,2), node_t(5,3),
     node_t(5,6), node_t(6,5), node_t(6,6)
   } ), 42 );
+
+  // 12 points, convex position
+
+  run_test( test_t( {
+    node_t(1,1), node_t(9,9),
+    node_t(1,2), node_t(2,5), node_t(3,7),
+    node_t(5,8), node_t(8,9),
+    node_t(2,1), node_t(5,2), node_t(7,3),
+    node_t(8,5), node_t(9,8)
+  } ), 132 );
+
+  // 14 points, convex position
+
+  run_test( test_t( {
+    node_t(1,1), node_t(10,10),
+    node_t(1,2), node_t(2,5), node_t(3,7),
+    node_t(4,8), node_t(6,9), node_t(9,10),
+    node_t(2,1), node_t(5,2), node_t(7,3),
+    node_t(8,4), node_t(9,6), node_t(10,9)
+  } ), 429 );
+
+  // 16 points, convex position
+
+  run_test( test_t( {
+    node_t(1,1), node_t(14,14),
+    node_t(1,2), node_t(2,6), node_t(3,9), node_t(4,11),
+    node_t(6,12), node_t(9,13), node_t(13,14),
+    node_t(2,1), node_t(6,2), node_t(9,3), node_t(11,4),
+    node_t(12,6), node_t(13,9), node_t(14,13)
+  } ), 1430 );
+
+  // 18 points, convex position
+
+  run_test( test_t( {
+    node_t(1,1), node_t(15,15),
+    node_t(1,2), node_t(2,6), node_t(3,9), node_t(4,11),
+    node_t(5,12), node_t(7,13), node_t(10,14), node_t(14,15),
+    node_t(2,1), node_t(6,2), node_t(9,3), node_t(11,4),
+    node_t(12,5), node_t(13,7), node_t(14,10), node_t(15,14)
+  } ), 4862 );
+
+  // 20 points, convex position
+
+  run_test( test_t( {
+    node_t(1,1), node_t(20,20),
+    node_t(1,2), node_t(2,7), node_t(3,11),
+    node_t(4,14), node_t(5,16), node_t(7,17),
+    node_t(10,18), node_t(14,19), node_t(19,20),
+    node_t(2,1), node_t(7,2), node_t(11,3),
+    node_t(14,4), node_t(16,5), node_t(17,7),
+    node_t(18,10), node_t(19,14), node_t(20,19)
+  } ), 16796 );
 }
 
